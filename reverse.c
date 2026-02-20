@@ -47,7 +47,7 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
     }
-    // Taulukko, johon tallennetaan kaikki rivit
+    // Taulukko johon tallennetaan kaikki rivit
     char **lines = NULL;
     size_t line_count = 0;
     size_t capacity = 0;
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
     // Luetaan tiedosto rivi kerrallaan
     while (getline(&buffer, &length, input) != -1) {
 
-        // Jos taulukko on täynnä -> kasvatetaan sitä
+        // Jos taulukko täynnä niin tehdään isompi
         if (line_count == capacity) {
             capacity = (capacity == 0) ? 10 : capacity * 2;
 
@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
             lines = temp;
         }
 
-        // Kopioidaan rivi omaan muistiin
+        // Rivin kopioiminen omaan muistiin
         lines[line_count] = strdup(buffer);
         if (lines[line_count] == NULL) {
             fprintf(stderr, "malloc failed\n");
@@ -82,7 +82,7 @@ int main(int argc, char *argv[]) {
 
     free(buffer);
 
-    // Tulostus käänteisessä järjestyksessä
+    // Tulostus käänteisesti
     for (size_t i = line_count; i > 0; i--) {
         fprintf(output, "%s", lines[i - 1]);
         free(lines[i - 1]);
@@ -95,3 +95,4 @@ int main(int argc, char *argv[]) {
 
     return 0;
 }
+
