@@ -1,64 +1,97 @@
-#reverse c program
-
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-int main(int argc, char *argv[]) {
-    FILE *in = stdin, *out = stdout;
+/*
+ * Tämä ohjelma lukee syötteen joko inputista tai tiedostosta.
+ *
+ * Tulostaa rivit käänteisessä järjestyksessä.
+ *
+ * Virhetilanteet käsitellään ohjeiden mukaisesti.
+ */
 
+int main(int argc, char *argv[]) {
+
+    // Oletuksena luetaan näppäimistöltä ja tulostetaan ruudulle
+    FILE *input = stdin;
+    FILE *output = stdout;
+
+    // Jos argumentteja liikaa niin virhe
     if (argc > 3) {
         fprintf(stderr, "usage: reverse <input> <output>\n");
         exit(1);
     }
 
+    // Jos annettu input-tiedosto
     if (argc >= 2) {
-        in = fopen(argv[1], "r");
-        if (!in) {
+        input = fopen(argv[1], "r");
+        if (input == NULL) {
             fprintf(stderr, "error: cannot open file '%s'\n", argv[1]);
             exit(1);
         }
     }
 
+    // Jos käyttäjä antoi myös output-tiedoston
     if (argc == 3) {
+
+        // Input ja output eivät saa olla sama tiedosto
         if (strcmp(argv[1], argv[2]) == 0) {
             fprintf(stderr, "Input and output file must differ\n");
             exit(1);
         }
-        out = fopen(argv[2], "w");
-        if (!out) {
+
+        output = fopen(argv[2], "w");
+        if (output == NULL) {
             fprintf(stderr, "error: cannot open file '%s'\n", argv[2]);
             exit(1);
         }
     }
-
+    // Taulukko, johon tallennetaan kaikki rivit
     char **lines = NULL;
-    size_t n = 0, cap = 0;
-    char *line = NULL;
-    size_t len = 0;
+    size_t line_count = 0;
+    size_t capacity = 0;
 
-    while (getline(&line, &len, in) != -1) {
-        if (n == cap) {
-            cap = cap ? cap * 2 : 16;
-            lines = realloc(lines, cap * sizeof(char *));
-            if (!lines) {
+    char *buffer = NULL;
+    size_t length = 0;
+    // Luetaan tiedosto rivi kerrallaan
+    while (getline(&buffer, &length, input) != -1) {
+
+        // Jos taulukko on täynnä -> kasvatetaan sitä
+        if (line_count == capacity) {
+            capacity = (capacity == 0) ? 10 : capacity * 2;
+
+            char **temp = realloc(lines, capacity * sizeof(char *));
+            if (temp == NULL) {
                 fprintf(stderr, "malloc failed\n");
                 exit(1);
             }
+
+            lines = temp;
         }
-        lines[n++] = strdup(line);
+
+        // Kopioidaan rivi omaan muistiin
+        lines[line_count] = strdup(buffer);
+        if (lines[line_count] == NULL) {
+            fprintf(stderr, "malloc failed\n");
+            exit(1);
+        }
+
+        line_count++;
     }
 
-    free(line);
+    free(buffer);
 
-    for (ssize_t i = n - 1; i >= 0; i--) {
-        fprintf(out, "%s", lines[i]);
-        free(lines[i]);
+    // Tulostus käänteisessä järjestyksessä
+    for (size_t i = line_count; i > 0; i--) {
+        fprintf(output, "%s", lines[i - 1]);
+        free(lines[i - 1]);
     }
 
     free(lines);
-    if (in != stdin) fclose(in);
-    if (out != stdout) fclose(out);
+    // Suljetaan tiedostot jos ne eivät ole stdin/stdout
+    if (input != stdin) fclose(input);
+    if (output != stdout) fclose(output);
+
     return 0;
 }
