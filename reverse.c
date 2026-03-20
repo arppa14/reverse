@@ -5,10 +5,12 @@
 
 /*
  * Tämä ohjelma lukee syötteen joko inputista tai tiedostosta.
- *
+ * 
  * Tulostaa rivit käänteisessä järjestyksessä.
  *
  * Virhetilanteet käsitellään ohjeiden mukaisesti.
+ * Apua tehtävään koulun matskuista, https://www.geeksforgeeks.org/c/reverse-string-in-c/ sekä stack overflow
+ * Tekoälyä käytettiin myös apuna 
  */
 
 int main(int argc, char *argv[]) {
