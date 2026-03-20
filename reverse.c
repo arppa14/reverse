@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
 
     // Jos argumentteja liikaa niin virhe
     if (argc > 3) {
-        fprintf(stderr, "usage: reverse <input> <output>\n");
+        fprintf(stderr, "käyttö: käänteinen <syöte> <tuloste>\n");
         exit(1);
     }
 
@@ -27,7 +27,7 @@ int main(int argc, char *argv[]) {
     if (argc >= 2) {
         input = fopen(argv[1], "r");
         if (input == NULL) {
-            fprintf(stderr, "error: cannot open file '%s'\n", argv[1]);
+            fprintf(stderr, "virhe: tiedostoa ei voida avata '%s'\n", argv[1]);
             exit(1);
         }
     }
@@ -37,13 +37,13 @@ int main(int argc, char *argv[]) {
 
         // Input ja output eivät saa olla sama tiedosto
         if (strcmp(argv[1], argv[2]) == 0) {
-            fprintf(stderr, "Input and output file must differ\n");
+            fprintf(stderr, "Syöte- ja tulostetiedostojen on oltava erilaiset\n");
             exit(1);
         }
 
         output = fopen(argv[2], "w");
         if (output == NULL) {
-            fprintf(stderr, "error: cannot open file '%s'\n", argv[2]);
+            fprintf(stderr, "virhe: Tiedostoa ei voida avata '%s'\n", argv[2]);
             exit(1);
         }
     }
@@ -63,7 +63,7 @@ int main(int argc, char *argv[]) {
 
             char **temp = realloc(lines, capacity * sizeof(char *));
             if (temp == NULL) {
-                fprintf(stderr, "malloc failed\n");
+                fprintf(stderr, "malloc epäonnistui\n");
                 exit(1);
             }
 
@@ -80,16 +80,15 @@ int main(int argc, char *argv[]) {
         line_count++;
     }
 
-    free(buffer);
-
     // Tulostus käänteisesti
+    free(buffer);
     for (size_t i = line_count; i > 0; i--) {
         fprintf(output, "%s", lines[i - 1]);
         free(lines[i - 1]);
-    }
+    }    
 
-    free(lines);
     // Suljetaan tiedostot jos ne eivät ole stdin/stdout
+    free(lines);
     if (input != stdin) fclose(input);
     if (output != stdout) fclose(output);
 
