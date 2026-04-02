@@ -10,7 +10,7 @@
  *
  * Virhetilanteet käsitellään ohjeiden mukaisesti.
  * Apua tehtävään koulun matskuista, https://www.geeksforgeeks.org/c/reverse-string-in-c/ sekä stack overflow
- * Tekoälyä käytettiin myös apuna 
+ * Tekoälyä käytettiin myös apuna virheenkäsittelyssä
  */
 
 int main(int argc, char *argv[]) {
